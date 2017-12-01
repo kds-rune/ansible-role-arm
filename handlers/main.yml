@@ -1,0 +1,10 @@
+---
+# handlers file for roles/noruro.arm
+- name: set_region
+  command: regionset /dev/sr0
+  become: True
+
+- name: configure_libdvd
+  command: dpkg-reconfigure -fnotinteractive libdvd-pkg
+  become: True
+
