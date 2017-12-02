@@ -1,0 +1,99 @@
+---
+
+- name: configure dvd region
+  apt:
+    name: regionset
+    state: present
+    update_repository: yes
+    cache_valid_time: 3600
+  become: True
+  notify: set_region
+  when: set_dvd_region == 'yes'
+
+- name: add repositories
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+    update_cache: yes
+  become: True
+  with_items:
+    - 'ppa:heyarje/makemkv-beta'
+    - 'ppa:stebbins/handbrake-releases'
+    - 'ppa:mc3man/xerus-media'
+
+- name: install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  become: True
+  with_items:
+    - python3
+    - python3-pip
+    - git
+    - makemkv-bin
+    - makemkv-oss
+    - handbrake-cli
+    - libavcodec-extra
+    - abcde
+    - flac
+    - imagemagick
+    - glyrc
+    - cdparanoia
+    - at
+
+- name: install/configure libdvd
+  apt:
+    name: libdvd-pkg
+    state: present
+  become: True
+  notify: configure_libdvd
+
+- meta: flush_handlers
+
+- name: clone arm repository
+  git:
+    repo: 'https://github.com/ahnooie/automatic-ripping-machine.git'
+    dest: /opt/arm
+    force: yes
+  become: True
+
+- name: install pip dependencies
+  pip:
+    requirements: '/opt/arm/requirements.txt'
+    executable: pip3
+  become: True
+
+- name: Create symbolic links
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  become: True
+  with_items:
+    - { src: '/opt/arm/51-automedia.rules', dest: '/lib/udev/rules.d/51automedia.rules' }
+    - { src: '/opt/arm/.abcde.conf', dest: '/root/.abcde.conf' }
+
+- name: Copy systemd files
+  copy:
+    src: /opt/arm/arm@.service
+    dest: /etc/systemd/system/arm@.service
+    remote_src: yes
+  become: True
+
+- name: Copy ARM configuration files
+  template:
+    src: config.j2
+    dest: /opt/arm/config
+  become: True
+
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  become: True
+  with_items:
+    - "{{ arm_path_base }}"
+    - "{{ arm_path_raw }}"
+    - "{{ arm_path_media }}"
+
