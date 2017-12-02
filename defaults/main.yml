@@ -1,6 +1,8 @@
 ---
 # defaults file for roles/noruro.arm
 set_dvd_region: False
+dvd_region: '2'
+
 arm_skip_transcode: 'false'
 arm_path_base: "/var/lib/ARM/Media/Unidentified/"
 arm_path_raw: "/var/lib/ARM/raw/"

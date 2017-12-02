@@ -1,7 +1,7 @@
 ---
 # handlers file for roles/noruro.arm
 - name: set_region
-  command: regionset /dev/sr0
+  command: "regionset /dev/sr{{ dvd_region}}"
   become: True
 
 - name: configure_libdvd

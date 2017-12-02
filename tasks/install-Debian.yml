@@ -23,6 +23,7 @@
     - python3-pip
     - software-properties-common
     - python-software-properties
+    - screen
 
 ## TODO: add 'codename' parameter for Debian
 - name: add PPA repositories
@@ -59,6 +60,8 @@
   apt:
     name: libdvd-pkg
     state: present
+    update_cache: yes
+    cache_valid_time: 3600
   become: True
   notify: configure_libdvd
 
