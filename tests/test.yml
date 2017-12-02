@@ -1,5 +1,18 @@
 ---
-- hosts: localhost
-  remote_user: root
+
+- hosts: all
   roles:
-    - roles/noruro.arm
+    - role_under_test
+
+  pre_tasks:
+
+    - name: Update cache for Debian
+      apt:
+        update_cache: yes
+        cache_valid_time: 600
+      when: ansible_os_family == 'Debian'
+
+    - name: install test dependencies
+      package:
+        name: curl
+        state: present
