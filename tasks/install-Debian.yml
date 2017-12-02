@@ -21,6 +21,8 @@
     - git
     - python3
     - python3-pip
+    - software-properties-common
+    - python-software-properties
 
 - name: add PPA repositories
   apt_repository:
