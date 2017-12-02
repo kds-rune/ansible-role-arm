@@ -24,6 +24,7 @@
     - software-properties-common
     - python-software-properties
 
+## TODO: add 'codename' parameter for Debian
 - name: add PPA repositories
   apt_repository:
     repo: "{{ item }}"
