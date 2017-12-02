@@ -4,13 +4,25 @@
   apt:
     name: regionset
     state: present
-    update_repository: yes
+    update_cache: yes
     cache_valid_time: 3600
   become: True
   notify: set_region
   when: set_dvd_region == 'yes'
 
-- name: add repositories
+- name: install system packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  update_cache: yes
+  cache_valid_time: 3600
+  become: True
+  with_items:
+    - git
+    - python3
+    - python3-pip
+
+- name: add PPA repositories
   apt_repository:
     repo: "{{ item }}"
     state: present
@@ -21,15 +33,12 @@
     - 'ppa:stebbins/handbrake-releases'
     - 'ppa:mc3man/xerus-media'
 
-- name: install packages
+- name: install ARM packages
   apt:
     name: "{{ item }}"
     state: present
   become: True
   with_items:
-    - python3
-    - python3-pip
-    - git
     - makemkv-bin
     - makemkv-oss
     - handbrake-cli
@@ -50,20 +59,20 @@
 
 - meta: flush_handlers
 
-- name: clone arm repository
+- name: clone ARM repository
   git:
     repo: 'https://github.com/ahnooie/automatic-ripping-machine.git'
     dest: /opt/arm
     force: yes
   become: True
 
-- name: install pip dependencies
+- name: install ARM pip dependencies
   pip:
     requirements: '/opt/arm/requirements.txt'
     executable: pip3
   become: True
 
-- name: Create symbolic links
+- name: Create ARM symbolic links
   file:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -73,7 +82,7 @@
     - { src: '/opt/arm/51-automedia.rules', dest: '/lib/udev/rules.d/51automedia.rules' }
     - { src: '/opt/arm/.abcde.conf', dest: '/root/.abcde.conf' }
 
-- name: Copy systemd files
+- name: Copy ARM systemd files
   copy:
     src: /opt/arm/arm@.service
     dest: /etc/systemd/system/arm@.service
@@ -86,7 +95,7 @@
     dest: /opt/arm/config
   become: True
 
-- name: Create directories
+- name: Create ARM directories
   file:
     path: "{{ item }}"
     state: directory
