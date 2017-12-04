@@ -13,11 +13,15 @@ galaxy_info:
     - xenial
 
   galaxy_tags:
-    - ubuntu
     - arm
-    - ripping
-    - video
-    - media
     - audio
+    - automatic
+    - cd
+    - dvd
+    - media
+    - music
+    - ripping
+    - ubuntu
+    - video
 
 dependencies: []

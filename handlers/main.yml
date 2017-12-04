@@ -1,8 +1,9 @@
 ---
 # handlers file for roles/noruro.arm
 - name: set_region
-  command: "regionset /dev/sr{{ dvd_region}}"
-  become: True
+  debug:
+    msg: "Please run 'regionset /dev/sr0' manually to configure region"
+  become: False
 
 - name: configure_libdvd
   command: dpkg-reconfigure -fnotinteractive libdvd-pkg

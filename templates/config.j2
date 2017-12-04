@@ -1,3 +1,4 @@
+# {{ ansible_managed }}
 # ARM (Automatic Ripping Machine) oonfig file
 
 #################
@@ -12,7 +13,7 @@ ARM_CHECK_UDF=true
 GET_VIDEO_TITLE=true
 
 # Skip transcoding if you want the original MakeMKV files as your final output
-# Thiw will produce the highest quality videos (and use the most storage)
+# This will produce the highest quality videos (and use the most storage)
 # Note: RIPMETHOD must be set to "mkv" for this feature to work
 SKIP_TRANSCODE={{ arm_skip_transcode }}
 
@@ -86,7 +87,7 @@ MKV_ARGS="{{ arm_mkv_args }}"
 HB_PRESET="{{ arm_hb_profile }}" 
 
 # Extension of the final video file
-DEST_EXT={{ arm_final_ext }}
+DEST_EXT={{ arm_hb_final_ext }}
 
 # Handbrake binary to call
 HANDBRAKE_CLI=HandBrakeCLI
@@ -100,7 +101,7 @@ HANDBRAKE_CLI=HandBrakeCLI
 MAINFEATURE=false
 
 # Additional HandBrake arguments.  
-HB_ARGS="--subtitle scan -F"
+HB_ARGS="{{ arm_hb_args }}"
 
 #####################
 ## Enable Plex Use ##

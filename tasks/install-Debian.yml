@@ -1,49 +1,45 @@
 ---
 
-- name: configure dvd region
+- name: configure dvd region (!)
+  become: True
   apt:
     name: regionset
     state: present
     update_cache: yes
     cache_valid_time: 3600
-  become: True
   notify: set_region
   when: set_dvd_region == 'yes'
 
-- name: install system packages
+- name: install required system packages
+  become: True
   apt:
     name: "{{ item }}"
     state: present
     update_cache: yes
     cache_valid_time: 3600
-  become: True
   with_items:
     - git
     - python3
     - python3-pip
-    - software-properties-common
-    - python-software-properties
-    - screen
 
-## TODO: add 'codename' parameter for Debian
 - name: add PPA repositories
+  become: True
   apt_repository:
     repo: "{{ item }}"
     state: present
     update_cache: yes
-  become: True
   with_items:
     - 'ppa:heyarje/makemkv-beta'
     - 'ppa:stebbins/handbrake-releases'
     - 'ppa:mc3man/xerus-media'
 
-- name: install ARM packages
+- name: install A.R.M. packages
+  become: True
   apt:
     name: "{{ item }}"
     state: present
     update_cache: yes
     cache_valid_time: 3600
-  become: True
   with_items:
     - makemkv-bin
     - makemkv-oss
@@ -57,58 +53,62 @@
     - at
 
 - name: install/configure libdvd
+  become: True
   apt:
     name: libdvd-pkg
     state: present
     update_cache: yes
     cache_valid_time: 3600
-  become: True
   notify: configure_libdvd
 
 - meta: flush_handlers
 
-- name: clone ARM repository
+- name: clone A.R.M. repository
+  become: True
   git:
     repo: 'https://github.com/ahnooie/automatic-ripping-machine.git'
     dest: /opt/arm
     force: yes
-  become: True
+    update: no
 
-- name: install ARM pip dependencies
+- name: install A.R.M. pip dependencies
+  become: True
   pip:
     requirements: '/opt/arm/requirements.txt'
     executable: pip3
-  become: True
 
-- name: Create ARM symbolic links
+- name: Create A.R.M. symbolic links
+  become: True
   file:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+    src: "/opt/arm/{{ item.filename }}"
+    dest: "{{ item.dest }}{{ item.filename }}"
     state: link
-  become: True
   with_items:
-    - { src: '/opt/arm/51-automedia.rules', dest: '/lib/udev/rules.d/51automedia.rules' }
-    - { src: '/opt/arm/.abcde.conf', dest: '/root/.abcde.conf' }
+    - { filename: '51-automedia.rules', dest: '/lib/udev/rules.d/' }
+    - { filename: '.abcde.conf', dest: '/root/' }
 
-- name: Copy ARM systemd files
+- name: Copy A.R.M. systemd files
+  become: True
   copy:
     src: /opt/arm/arm@.service
     dest: /etc/systemd/system/arm@.service
     remote_src: yes
-  become: True
 
-- name: Copy ARM configuration files
+- name: Copy A.R.M. configuration templates
+  become: True
   template:
-    src: config.j2
-    dest: /opt/arm/config
-  become: True
+    src: "{{ item }}.j2"
+    dest: "/opt/arm/{{ item }}"
+  with_items:
+    - config
+    - default.mmcp.xml
 
-- name: Create ARM directories
+- name: Create A.R.M. directories
+  become: True
   file:
     path: "{{ item }}"
     state: directory
     recurse: yes
-  become: True
   with_items:
     - "{{ arm_path_base }}"
     - "{{ arm_path_raw }}"

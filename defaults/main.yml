@@ -4,15 +4,29 @@ set_dvd_region: False
 dvd_region: '2'
 
 arm_skip_transcode: 'false'
-arm_path_base: "/var/lib/ARM/Media/Unidentified/"
-arm_path_raw: "/var/lib/ARM/raw/"
-arm_path_media: "/var/lib/ARM/Media/Movies/"
-arm_rip_method: "mkv"
-arm_mkv_args: ""
-arm_hb_profile: "High Profile"
-arm_final_ext: 'mkv'
+
+arm_path_base: '/var/lib/ARM/Media/Unidentified/'
+arm_path_raw: '/var/lib/ARM/raw/'
+arm_path_media: '/var/lib/ARM/Media/Movies/'
+
+arm_rip_method: 'mkv'
+arm_mkv_args: ''
+
+####
+## + : select
+## - : de-select
+arm_mkv_profile: '-sel:all,+sel:(favlang|nolang|single),-sel:(havemulti|havecore),-sel:mvcvideo,=100:all,-10:favlang'
+
+arm_hb_profile: 'High Profile'
+arm_hb_final_ext: 'mkv'
+
+####
+## https://handbrake.fr/docs/en/latest/cli/cli-guide.html
+arm_hb_args: '--subtitle scan -F' 
+
 arm_plex_extras: 'false'
+
 arm_notify_rip: 'true'
 arm_notify_transcode: 'true'
-arm_pushbullet_key: ""
+arm_pushbullet_key: ''
 
