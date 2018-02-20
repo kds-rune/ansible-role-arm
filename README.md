@@ -15,6 +15,7 @@ None
 None
 
 # Example Playbook
+
 ```yaml
 - hosts: army-of-arms
   gather_facts: True
@@ -28,6 +29,7 @@ None
       arm_hb_args: '--subtitle-lang-list nob,eng --all-subtitles --subtitle scan -F --audio-lang-list nob,eng,und --all-audio'
       arm_plex_extras: 'true'
 ```
+
 # License
 
 MIT
